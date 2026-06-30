@@ -29,6 +29,8 @@ const RECOMMENDED_KEYWORDS = [
   "美味蟹堡",
   "垃圾渣渣",
   "想像力",
+  "超勁爆",
+  "不對",
 ];
 
 export function HomeScreen() {
