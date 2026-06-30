@@ -20,6 +20,17 @@ import { fetchQuotes, type Quote } from "@/lib/quotes";
 type LoadState = "loading" | "ready" | "error";
 const RESULTS_PER_PAGE = 12;
 
+const RECOMMENDED_KEYWORDS = [
+  "神奇海螺",
+  "派欸",
+  "今天很嗆是吧",
+  "為什麼會漸行漸遠呢",
+  "胖呆",
+  "美味蟹堡",
+  "垃圾渣渣",
+  "想像力",
+];
+
 export function HomeScreen() {
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -133,6 +144,14 @@ export function HomeScreen() {
     });
   }
 
+  function handleSelectKeyword(keyword: string) {
+    setSearchInputValue(keyword);
+    startTransition(() => {
+      setSearchTerm(keyword);
+      setCurrentPage(1);
+    });
+  }
+
   function handleImageError(quoteId: string) {
     setBrokenImageIds((current) => ({
       ...current,
@@ -194,7 +213,7 @@ export function HomeScreen() {
               <button
                 type="button"
                 onClick={handleDrawQuote}
-                className="inline-flex items-center gap-2 rounded-2xl bg-brand-deep px-5 py-3 text-sm font-bold text-white transition shadow-sm hover:scale-[1.02] hover:bg-brand-deep/95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="cursor-pointer inline-flex items-center gap-2 rounded-2xl bg-brand-deep px-5 py-3 text-sm font-bold text-white transition shadow-sm hover:scale-[1.02] hover:bg-brand-deep/95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <Dices className="h-4 w-4" />
                 隨機抽一張
@@ -234,7 +253,7 @@ export function HomeScreen() {
                       href={selectedQuote.imgurUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl bg-surface hover:bg-surface-strong px-4 py-2.5 text-sm font-bold text-ocean border border-border transition hover:text-brand-deep"
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-surface hover:bg-surface-strong px-4 py-2.5 text-sm font-bold text-ocean border border-border transition hover:text-brand-deep"
                     >
                       <span>在 Imgur 上觀看原圖</span>
                       <ExternalLink className="h-4 w-4" />
@@ -305,7 +324,7 @@ export function HomeScreen() {
                     <button
                       type="button"
                       onClick={handleDrawQuote}
-                      className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 rounded-2xl bg-ocean px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean/95 shadow-sm active:scale-95"
+                      className="cursor-pointer flex-1 md:flex-none inline-flex items-center justify-center gap-2 rounded-2xl bg-ocean px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean/95 shadow-sm active:scale-95"
                     >
                       <Dices className="h-4 w-4" />
                       隨機抽卡
@@ -314,12 +333,30 @@ export function HomeScreen() {
                       type="button"
                       onClick={handleResetSearch}
                       disabled={!searchInputValue}
-                      className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-white px-5 py-3 text-sm font-bold text-foreground transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-white px-5 py-3 text-sm font-bold text-foreground transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <RotateCcw className="h-4 w-4" />
                       清除
                     </button>
                   </div>
+                </div>
+
+                {/* Recommended Keywords */}
+                <div className="flex flex-wrap items-center gap-2 text-xs border-t border-border/40 pt-3 mt-1">
+                  <span className="text-ink-soft font-bold mr-1 flex items-center gap-1">
+                    <Sparkles className="h-3.5 w-3.5 text-brand" />
+                    熱門推薦：
+                  </span>
+                  {RECOMMENDED_KEYWORDS.map((kw) => (
+                    <button
+                      key={kw}
+                      type="button"
+                      onClick={() => handleSelectKeyword(kw)}
+                      className="cursor-pointer inline-flex items-center rounded-full bg-white hover:bg-ocean hover:text-white border border-border px-3 py-1.5 font-semibold text-ink-soft transition shadow-sm active:scale-95"
+                    >
+                      #{kw}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Filter Summary */}
@@ -435,7 +472,7 @@ export function HomeScreen() {
                               target="_blank"
                               rel="noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border px-3.5 py-1.5 text-xs font-bold text-ocean transition hover:border-brand-deep hover:text-brand-deep hover:bg-brand-deep/5"
+                              className="cursor-pointer inline-flex items-center justify-center gap-1.5 rounded-xl border border-border px-3.5 py-1.5 text-xs font-bold text-ocean transition hover:border-brand-deep hover:text-brand-deep hover:bg-brand-deep/5"
                             >
                               <span>Imgur</span>
                               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -458,7 +495,7 @@ export function HomeScreen() {
                           setCurrentPage((page) => Math.max(1, page - 1));
                         }}
                         disabled={safePage === 1}
-                        className="inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         <ChevronLeft className="h-4 w-4" />
                         上一頁
@@ -472,7 +509,7 @@ export function HomeScreen() {
                           setCurrentPage((page) => Math.min(totalPages, page + 1));
                         }}
                         disabled={safePage === totalPages}
-                        className="inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         下一頁
                         <ChevronRight className="h-4 w-4" />
@@ -524,7 +561,7 @@ function ErrorState({
         onClick={() => {
           void onRetry();
         }}
-        className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#7b341e] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#5a2312] shadow-sm active:scale-95"
+        className="cursor-pointer mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#7b341e] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#5a2312] shadow-sm active:scale-95"
       >
         重新載入資料
       </button>
