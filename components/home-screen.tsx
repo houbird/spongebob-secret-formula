@@ -148,13 +148,8 @@ export function HomeScreen() {
                 神奇海螺不開口，
                 <span className="text-brand-deep"> 你自己抽一張。</span>
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-ink-soft sm:text-lg">
-                資料來自 opensheet 即時 API。首頁不預載全部圖片，只在你抽到一張或查到當前分頁結果時才真正請求圖片。
-              </p>
             </div>
             <div className="flex flex-wrap gap-3 text-sm text-ink-soft">
-              <StatusPill label="模式" value="Static export" />
-              <StatusPill label="資料源" value="Runtime fetch" />
               <StatusPill label="目前筆數" value={quotes.length ? `${quotes.length}` : "載入中"} />
             </div>
           </div>
