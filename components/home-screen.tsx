@@ -27,7 +27,9 @@ export function HomeScreen() {
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isComposingSearch, setIsComposingSearch] = useState(false);
   const [brokenImageIds, setBrokenImageIds] = useState<Record<string, boolean>>(
     {},
   );
@@ -96,6 +98,19 @@ export function HomeScreen() {
   }
 
   function handleSearchTermChange(nextValue: string) {
+    setSearchInputValue(nextValue);
+
+    if (isComposingSearch) {
+      return;
+    }
+
+    startTransition(() => {
+      setSearchTerm(nextValue);
+      setCurrentPage(1);
+    });
+  }
+
+  function commitSearchTerm(nextValue: string) {
     startTransition(() => {
       setSearchTerm(nextValue);
       setCurrentPage(1);
@@ -103,6 +118,9 @@ export function HomeScreen() {
   }
 
   function handleResetSearch() {
+    setSearchInputValue("");
+    setIsComposingSearch(false);
+
     startTransition(() => {
       setSearchTerm("");
       setCurrentPage(1);
@@ -143,7 +161,6 @@ export function HomeScreen() {
           <div className="grid gap-3 rounded-[1.75rem] bg-[linear-gradient(180deg,rgba(18,116,117,0.12),rgba(255,183,3,0.12))] p-4 sm:grid-cols-3 lg:grid-cols-1">
             <MiniStat title="好手氣" value="抽一張" accent="text-brand-deep" className="animate-rise-in animate-delay-1" />
             <MiniStat title="查詢" value="關鍵字 + 分頁" accent="text-ocean" className="animate-rise-in animate-delay-2" />
-            <MiniStat title="省流策略" value="只渲染需要的圖" accent="text-foreground" className="animate-rise-in animate-delay-3" />
           </div>
         </div>
       </header>
@@ -254,9 +271,19 @@ export function HomeScreen() {
                   <input
                     type="search"
                     aria-describedby={searchSummaryId}
-                    value={searchTerm}
+                    value={searchInputValue}
                     onChange={(event) => {
                       handleSearchTermChange(event.target.value);
+                    }}
+                    onCompositionStart={() => {
+                      setIsComposingSearch(true);
+                    }}
+                    onCompositionEnd={(event) => {
+                      const nextValue = event.currentTarget.value;
+
+                      setIsComposingSearch(false);
+                      setSearchInputValue(nextValue);
+                      commitSearchTerm(nextValue);
                     }}
                     placeholder="例如：神奇海螺、SS0001、S3E03"
                     className="w-full bg-transparent text-sm outline-none placeholder:text-ink-soft"
@@ -291,7 +318,7 @@ export function HomeScreen() {
                 <button
                   type="button"
                   onClick={handleResetSearch}
-                  disabled={!searchTerm}
+                  disabled={!searchInputValue}
                   className="inline-flex items-center gap-2 self-start rounded-full border border-border bg-white px-3 py-2 font-semibold text-foreground transition hover:border-brand hover:text-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40 sm:self-auto"
                 >
                   <RotateCcw className="h-4 w-4" />
