@@ -1,6 +1,8 @@
 export const QUOTES_ENDPOINT =
   "https://opensheet.elk.sh/1P7h4--lgGrIEsLNz-qyVJUJ7V6yPgZUaFU-wwfqwH7M/wumbo";
 
+const DEV_QUOTES_PROXY_PATH = "/api/quotes/";
+
 export type QuoteRecord = {
   date: string;
   id: string;
@@ -77,7 +79,12 @@ export function normalizeQuoteRecord(record: QuoteRecord): Quote {
 }
 
 export async function fetchQuotes() {
-  const response = await fetch(QUOTES_ENDPOINT, {
+  const endpoint =
+    process.env.NODE_ENV === "development"
+      ? DEV_QUOTES_PROXY_PATH
+      : QUOTES_ENDPOINT;
+
+  const response = await fetch(endpoint, {
     cache: "no-store",
   });
 

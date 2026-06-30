@@ -410,7 +410,7 @@ export function HomeScreen() {
                         style={{ animationDelay: `${Math.min(index * 40, 200)}ms` }}
                       >
                         {/* Image Frame */}
-                        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f4e5ba]">
+                        <div className="relative aspect-4/3 w-full overflow-hidden bg-[#f4e5ba]">
                           {brokenImageIds[quote.id] ? (
                             <div className="flex h-full items-center justify-center px-6 text-center text-xs font-semibold text-ink-soft">
                               這張圖暫時載不到，請點連結往 Imgur 觀看。
@@ -444,7 +444,7 @@ export function HomeScreen() {
                           </div>
 
                           {/* Bottom info overlay */}
-                          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 py-3 text-white">
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 to-transparent px-4 py-3 text-white">
                             <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90 truncate">
                               {quote.wikipediaEpisode}
                             </p>
