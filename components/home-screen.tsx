@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { startTransition, useDeferredValue, useEffect, useId, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -524,6 +525,19 @@ export function HomeScreen() {
           </section>
         )}
       </main>
+
+      {/* Footer Block */}
+      <footer className="mt-12 py-6 border-t border-border/40 text-center text-xs text-ink-soft">
+        <p>© {new Date().getFullYear()} 海底迷因靜態站. 非官方粉絲網頁。</p>
+        <p className="mt-2">
+          <Link
+            href="/copyright"
+            className="cursor-pointer font-bold text-ocean hover:text-brand-deep underline transition-colors"
+          >
+            版權聲明與資料來源
+          </Link>
+        </p>
+      </footer>
     </div>
   );
 }
