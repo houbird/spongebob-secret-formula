@@ -47,6 +47,7 @@ export function HomeScreen() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageInputValue, setPageInputValue] = useState("1");
   const [isComposingSearch, setIsComposingSearch] = useState(false);
   const [brokenImageIds, setBrokenImageIds] = useState<Record<string, boolean>>(
     {},
@@ -73,6 +74,30 @@ export function HomeScreen() {
     pageStart,
     pageStart + RESULTS_PER_PAGE,
   );
+
+  useEffect(() => {
+    setPageInputValue(safePage.toString());
+  }, [safePage]);
+
+  function handlePageInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    setPageInputValue(val);
+
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= totalPages) {
+      setCurrentPage(parsed);
+    }
+  }
+
+  function handlePageInputBlur() {
+    setPageInputValue(safePage.toString());
+  }
+
+  function handlePageInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+    }
+  }
 
   useEffect(() => {
     void loadQuotes();
@@ -508,9 +533,20 @@ export function HomeScreen() {
                         <ChevronLeft className="h-4 w-4" />
                         上一頁
                       </button>
-                      <span className="font-bold text-foreground">
-                        第 {safePage} / {totalPages} 頁
-                      </span>
+                      <div className="flex items-center gap-1.5 font-bold text-foreground">
+                        <span>第</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={totalPages}
+                          value={pageInputValue}
+                          onChange={handlePageInputChange}
+                          onBlur={handlePageInputBlur}
+                          onKeyDown={handlePageInputKeyDown}
+                          className="w-14 text-center font-bold bg-white border border-border py-1 px-1.5 text-sm outline-none rounded-xl focus:border-ocean focus:ring-2 focus:ring-ocean/10 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <span>/ {totalPages} 頁</span>
+                      </div>
                       <button
                         type="button"
                         onClick={() => {
