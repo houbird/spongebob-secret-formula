@@ -22,16 +22,21 @@ type LoadState = "loading" | "ready" | "error";
 const RESULTS_PER_PAGE = 12;
 
 const RECOMMENDED_KEYWORDS = [
-  "神奇海螺",
+  "S3E03",
+  "胖",
+  "想",
+  "酷",
+  "錢",
   "派欸",
-  "今天很嗆是吧",
-  "為什麼會漸行漸遠呢",
-  "胖呆",
-  "美味蟹堡",
-  "垃圾渣渣",
-  "想像力",
-  "超勁爆",
+  "很嗆",
+  "上班",
+  "遜咖",
+  "美好",
+  "蟹堡",
+  "垃圾",
+  "勁爆",
   "不對",
+  "想像力",
 ];
 
 export function HomeScreen() {
