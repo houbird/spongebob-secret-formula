@@ -53,6 +53,7 @@ export function HomeScreen() {
     {},
   );
   const previewSectionRef = useRef<HTMLElement | null>(null);
+  const searchSectionRef = useRef<HTMLElement | null>(null);
   const searchSummaryId = useId();
 
   const deferredSearchTerm = useDeferredValue(searchTerm);
@@ -76,6 +77,7 @@ export function HomeScreen() {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPageInputValue(safePage.toString());
   }, [safePage]);
 
@@ -177,12 +179,19 @@ export function HomeScreen() {
     });
   }
 
-  function handleSelectKeyword(keyword: string) {
+  function handleSelectKeyword(keyword: string, shouldScroll = false) {
     setSearchInputValue(keyword);
     startTransition(() => {
       setSearchTerm(keyword);
       setCurrentPage(1);
     });
+
+    if (shouldScroll) {
+      searchSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   }
 
   function handleImageError(quoteId: string) {
@@ -276,9 +285,21 @@ export function HomeScreen() {
 
                   {/* Meta Chips */}
                   <div className="flex flex-wrap gap-2 pt-2">
-                    <MetaChip label="維基集數" value={selectedQuote.wikipediaEpisode} />
-                    <MetaChip label="ESFIO 代號" value={selectedQuote.esfio} />
-                    <MetaChip label="上傳日期" value={selectedQuote.date} />
+                    <MetaChip
+                      label="維基集數"
+                      value={selectedQuote.wikipediaEpisode}
+                      onClick={() => handleSelectKeyword(selectedQuote.wikipediaEpisode, true)}
+                    />
+                    <MetaChip
+                      label="ESFIO 代號"
+                      value={selectedQuote.esfio}
+                      onClick={() => handleSelectKeyword(selectedQuote.esfio, true)}
+                    />
+                    <MetaChip
+                      label="上傳日期"
+                      value={selectedQuote.date}
+                      onClick={() => handleSelectKeyword(selectedQuote.date, true)}
+                    />
                   </div>
 
                   <div className="pt-2">
@@ -314,7 +335,10 @@ export function HomeScreen() {
 
         {/* Search & Grid Gallery Section */}
         {loadState === "ready" && (
-          <section className="animate-rise-in animate-delay-2 overflow-hidden rounded-4xl border border-border bg-surface-contrast/85 shadow-(--shadow) backdrop-blur-md">
+          <section
+            ref={searchSectionRef}
+            className="animate-rise-in animate-delay-2 overflow-hidden rounded-4xl border border-border bg-surface-contrast/85 shadow-(--shadow) backdrop-blur-md scroll-mt-6"
+          >
             <div className="border-b border-border px-6 py-5 sm:px-8 bg-white/40">
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-ocean">
                 🔍 探索與搜尋
@@ -651,7 +675,32 @@ function StatusPill({ label, value }: { label: string; value: string }) {
   );
 }
 
-function MetaChip({ label, value }: { label: string; value: string }) {
+function MetaChip({
+  label,
+  value,
+  onClick,
+}: {
+  label: string;
+  value: string;
+  onClick?: () => void;
+}) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-border bg-white/90 hover:bg-ocean hover:text-white hover:border-ocean px-3 py-1.5 text-xs shadow-sm transition active:scale-95 group text-left"
+      >
+        <span className="font-bold text-foreground group-hover:text-white transition-colors">
+          {label}
+        </span>
+        <span className="text-ink-soft group-hover:text-white/90 transition-colors">
+          {value}
+        </span>
+      </button>
+    );
+  }
+
   return (
     <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/90 px-3 py-1.5 text-xs shadow-sm">
       <span className="font-bold text-foreground">{label}</span>
