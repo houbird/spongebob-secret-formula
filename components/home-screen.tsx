@@ -21,6 +21,21 @@ import { fetchQuotes, type Quote } from "@/lib/quotes";
 type LoadState = "loading" | "ready" | "error";
 const RESULTS_PER_PAGE = 12;
 
+function formatDate(isoString: string) {
+  if (!isoString) return "";
+  try {
+    const date = new Date(isoString);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const hh = String(date.getHours()).padStart(2, "0");
+    const min = String(date.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+  } catch {
+    return isoString;
+  }
+}
+
 const RECOMMENDED_KEYWORDS = [
   "S3E03",
   "胖",
@@ -42,6 +57,7 @@ const RECOMMENDED_KEYWORDS = [
 export function HomeScreen() {
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [updatedAt, setUpdatedAt] = useState<string>("");
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,8 +125,9 @@ export function HomeScreen() {
     try {
       setLoadState("loading");
       setErrorMessage("");
-      const nextQuotes = await fetchQuotes();
+      const { quotes: nextQuotes, updatedAt: nextUpdatedAt } = await fetchQuotes();
       setQuotes(nextQuotes);
+      setUpdatedAt(nextUpdatedAt);
       setLoadState("ready");
       
       // Auto-select a random quote on mount to avoid blank/empty preview state
@@ -218,6 +235,9 @@ export function HomeScreen() {
           </div>
           <div className="flex flex-wrap gap-3 text-sm text-ink-soft">
             <StatusPill label="總台詞庫" value={quotes.length ? `${quotes.length} 筆` : "載入中"} />
+            {updatedAt && (
+              <StatusPill label="最後更新" value={formatDate(updatedAt)} />
+            )}
           </div>
         </div>
       </header>

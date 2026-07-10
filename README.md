@@ -18,7 +18,8 @@
 
 ## 資料來源
 
-- API: `https://opensheet.elk.sh/1P7h4--lgGrIEsLNz-qyVJUJ7V6yPgZUaFU-wwfqwH7M/wumbo`
+- 原始 API: `https://opensheet.elk.sh/1P7h4--lgGrIEsLNz-qyVJUJ7V6yPgZUaFU-wwfqwH7M/wumbo`
+- 專案使用 GitHub Action 手動觸發更新（`.github/workflows/update-quotes.yml`），並將抓取下來的 JSON 快取在專案的 `public/quotes.json`，於瀏覽器載入時取用，以減少對外部 API 的依賴並標註資料最後更新時間。
 
 ## 本機開發
 

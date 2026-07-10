@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build && node scripts/postbuild-pages-preview.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fetch-quotes": "node scripts/fetch-quotes.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.22.0",

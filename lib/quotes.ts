@@ -1,8 +1,3 @@
-export const QUOTES_ENDPOINT =
-  "https://opensheet.elk.sh/1P7h4--lgGrIEsLNz-qyVJUJ7V6yPgZUaFU-wwfqwH7M/wumbo";
-
-const DEV_QUOTES_PROXY_PATH = "/api/quotes/";
-
 export type QuoteRecord = {
   date: string;
   id: string;
@@ -78,11 +73,17 @@ export function normalizeQuoteRecord(record: QuoteRecord): Quote {
   };
 }
 
-export async function fetchQuotes() {
+export type QuotesResponse = {
+  updatedAt: string;
+  quotes: Quote[];
+};
+
+export async function fetchQuotes(): Promise<QuotesResponse> {
+  const basePath = "/spongebob-secret-formula";
   const endpoint =
     process.env.NODE_ENV === "development"
-      ? DEV_QUOTES_PROXY_PATH
-      : QUOTES_ENDPOINT;
+      ? "/quotes.json"
+      : `${basePath}/quotes.json`;
 
   const response = await fetch(endpoint, {
     cache: "no-store",
@@ -94,12 +95,27 @@ export async function fetchQuotes() {
 
   const payload: unknown = await response.json();
 
-  if (!Array.isArray(payload)) {
-    throw new Error("Unexpected quotes payload.");
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    !("quotes" in payload) ||
+    !Array.isArray(payload.quotes)
+  ) {
+    throw new Error("Unexpected quotes payload structure.");
   }
 
-  return payload
+  const quotes = (payload.quotes as unknown[])
     .filter(isQuoteRecord)
     .map(normalizeQuoteRecord)
     .sort((left, right) => left.id.localeCompare(right.id, "en"));
+
+  const updatedAt =
+    "updatedAt" in payload && typeof payload.updatedAt === "string"
+      ? payload.updatedAt
+      : "";
+
+  return {
+    updatedAt,
+    quotes,
+  };
 }
