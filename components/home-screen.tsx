@@ -278,7 +278,7 @@ export function HomeScreen() {
                 className="cursor-pointer inline-flex items-center gap-2 rounded-2xl bg-brand-deep px-5 py-3 text-sm font-bold text-white transition shadow-sm hover:scale-[1.02] hover:bg-brand-deep/95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <Dices className="h-4 w-4" />
-                隨機抽一張
+                好手氣
               </button>
             </div>
 
@@ -404,7 +404,7 @@ export function HomeScreen() {
                       className="cursor-pointer flex-1 md:flex-none inline-flex items-center justify-center gap-2 rounded-2xl bg-ocean px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean/95 shadow-sm active:scale-95"
                     >
                       <Dices className="h-4 w-4" />
-                      隨機抽卡
+                      好手氣
                     </button>
                     <button
                       type="button"
