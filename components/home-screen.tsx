@@ -266,7 +266,7 @@ export function HomeScreen() {
             <div className="flex items-center justify-between gap-4 border-b border-border px-6 py-5 sm:px-8 bg-white/40">
               <div className="space-y-1">
                 <span className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-deep">
-                  🎬 名場面預覽
+                  🎬 迷因預覽
                 </span>
                 <h2 className="text-xl font-bold text-foreground">
                   編號：{selectedQuote.id}
@@ -364,7 +364,7 @@ export function HomeScreen() {
                 🔍 探索與搜尋
               </span>
               <h2 className="text-xl font-bold text-foreground mt-1">
-                所有經典名場面
+                所有經典迷因
               </h2>
             </div>
 
@@ -464,7 +464,7 @@ export function HomeScreen() {
                   <span className="font-medium">
                     {normalizedQuery
                       ? `找到 ${filteredQuotes.length} 筆符合條件，現在顯示第 ${safePage} / ${totalPages} 頁`
-                      : `顯示全部名場面，共 ${totalPages} 頁`}
+                      : `顯示全部迷因，共 ${totalPages} 頁`}
                   </span>
                 </div>
               </div>
