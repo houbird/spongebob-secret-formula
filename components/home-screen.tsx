@@ -46,12 +46,12 @@ const RECOMMENDED_KEYWORDS = [
   "很嗆",
   "上班",
   "遜咖",
+  "小丑",
   "美好",
   "蟹堡",
   "垃圾",
   "勁爆",
   "不對",
-  "想像力",
 ];
 
 export function HomeScreen() {
