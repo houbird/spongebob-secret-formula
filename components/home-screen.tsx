@@ -42,6 +42,7 @@ const RECOMMENDED_KEYWORDS = [
   "想",
   "酷",
   "錢",
+  "之後",
   "派欸",
   "很嗆",
   "上班",
