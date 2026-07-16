@@ -10,6 +10,7 @@ interface PaginationProps {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
   className?: string;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 export function Pagination({
@@ -19,6 +20,7 @@ export function Pagination({
   itemsPerPage,
   onPageChange,
   className = "",
+  ref,
 }: PaginationProps) {
   const [prevCurrentPage, setPrevCurrentPage] = useState(currentPage);
   const [inputValue, setInputValue] = useState(currentPage.toString());
@@ -55,6 +57,7 @@ export function Pagination({
 
   return (
     <div
+      ref={ref}
       className={`flex flex-col gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 text-sm sm:flex-row sm:items-center sm:justify-between shadow-sm transition-all duration-300 ${className}`}
     >
       {/* Items count summary */}

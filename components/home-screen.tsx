@@ -69,6 +69,8 @@ export function HomeScreen() {
   );
   const previewSectionRef = useRef<HTMLElement | null>(null);
   const searchSectionRef = useRef<HTMLElement | null>(null);
+  const topPaginationRef = useRef<HTMLDivElement | null>(null);
+  const bottomPaginationRef = useRef<HTMLDivElement | null>(null);
   const searchSummaryId = useId();
 
   const deferredSearchTerm = useDeferredValue(searchTerm);
@@ -183,6 +185,19 @@ export function HomeScreen() {
         block: "start",
       });
     }
+  }
+
+  function handlePageChange(page: number, source: "top" | "bottom") {
+    setCurrentPage(page);
+    const targetRef = source === "top" ? topPaginationRef : bottomPaginationRef;
+    const blockAlign = source === "top" ? "start" : "end";
+    
+    setTimeout(() => {
+      targetRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: blockAlign,
+      });
+    }, 50);
   }
 
   function handleImageError(quoteId: string) {
@@ -453,11 +468,13 @@ export function HomeScreen() {
                 <div className="space-y-6">
                   {/* Top Pagination Controls */}
                   <Pagination
+                    ref={topPaginationRef}
                     currentPage={safePage}
                     totalPages={totalPages}
                     totalItems={filteredQuotes.length}
                     itemsPerPage={RESULTS_PER_PAGE}
-                    onPageChange={setCurrentPage}
+                    onPageChange={(page) => handlePageChange(page, "top")}
+                    className="scroll-mt-6"
                   />
 
                   {/* Expanded Grid Layout (4 columns on desktop) */}
@@ -545,11 +562,13 @@ export function HomeScreen() {
 
                   {/* Bottom Pagination Controls */}
                   <Pagination
+                    ref={bottomPaginationRef}
                     currentPage={safePage}
                     totalPages={totalPages}
                     totalItems={filteredQuotes.length}
                     itemsPerPage={RESULTS_PER_PAGE}
-                    onPageChange={setCurrentPage}
+                    onPageChange={(page) => handlePageChange(page, "bottom")}
+                    className="scroll-mt-6"
                   />
                 </div>
               ) : null}
