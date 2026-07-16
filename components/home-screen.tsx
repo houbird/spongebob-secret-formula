@@ -5,8 +5,6 @@ import Link from "next/link";
 import { startTransition, useDeferredValue, useEffect, useId, useRef, useState } from "react";
 import {
   ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Dices,
   ExternalLink,
   LoaderCircle,
@@ -17,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { fetchQuotes, type Quote } from "@/lib/quotes";
+import { Pagination } from "./pagination";
 
 type LoadState = "loading" | "ready" | "error";
 const RESULTS_PER_PAGE = 12;
@@ -64,7 +63,6 @@ export function HomeScreen() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputValue, setPageInputValue] = useState("1");
   const [isComposingSearch, setIsComposingSearch] = useState(false);
   const [brokenImageIds, setBrokenImageIds] = useState<Record<string, boolean>>(
     {},
@@ -92,31 +90,6 @@ export function HomeScreen() {
     pageStart,
     pageStart + RESULTS_PER_PAGE,
   );
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPageInputValue(safePage.toString());
-  }, [safePage]);
-
-  function handlePageInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    setPageInputValue(val);
-
-    const parsed = parseInt(val, 10);
-    if (!isNaN(parsed) && parsed >= 1 && parsed <= totalPages) {
-      setCurrentPage(parsed);
-    }
-  }
-
-  function handlePageInputBlur() {
-    setPageInputValue(safePage.toString());
-  }
-
-  function handlePageInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      e.currentTarget.blur();
-    }
-  }
 
   useEffect(() => {
     void loadQuotes();
@@ -478,6 +451,15 @@ export function HomeScreen() {
               {/* Grid Gallery */}
               {visibleQuotes.length > 0 ? (
                 <div className="space-y-6">
+                  {/* Top Pagination Controls */}
+                  <Pagination
+                    currentPage={safePage}
+                    totalPages={totalPages}
+                    totalItems={filteredQuotes.length}
+                    itemsPerPage={RESULTS_PER_PAGE}
+                    onPageChange={setCurrentPage}
+                  />
+
                   {/* Expanded Grid Layout (4 columns on desktop) */}
                   <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {visibleQuotes.map((quote, index) => (
@@ -561,50 +543,14 @@ export function HomeScreen() {
                     ))}
                   </div>
 
-                  {/* Pagination Controls */}
-                  <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between shadow-sm">
-                    <div className="text-center font-bold text-foreground sm:text-left">
-                      顯示第 {pageStart + 1} 到 {pageStart + visibleQuotes.length} 筆 (共 {filteredQuotes.length} 筆)
-                    </div>
-                    <div className="flex items-center justify-between gap-3 sm:justify-end">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCurrentPage((page) => Math.max(1, page - 1));
-                        }}
-                        disabled={safePage === 1}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        上一頁
-                      </button>
-                      <div className="flex items-center gap-1.5 font-bold text-foreground">
-                        <span>第</span>
-                        <input
-                          type="number"
-                          min={1}
-                          max={totalPages}
-                          value={pageInputValue}
-                          onChange={handlePageInputChange}
-                          onBlur={handlePageInputBlur}
-                          onKeyDown={handlePageInputKeyDown}
-                          className="w-14 text-center font-bold bg-white border border-border py-1 px-1.5 text-sm outline-none rounded-xl focus:border-ocean focus:ring-2 focus:ring-ocean/10 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                        <span>/ {totalPages} 頁</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCurrentPage((page) => Math.min(totalPages, page + 1));
-                        }}
-                        disabled={safePage === totalPages}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2 font-bold text-foreground transition hover:border-ocean hover:text-ocean disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        下一頁
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
+                  {/* Bottom Pagination Controls */}
+                  <Pagination
+                    currentPage={safePage}
+                    totalPages={totalPages}
+                    totalItems={filteredQuotes.length}
+                    itemsPerPage={RESULTS_PER_PAGE}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
               ) : null}
             </div>
