@@ -69,6 +69,7 @@ export function HomeScreen() {
   );
   const previewSectionRef = useRef<HTMLElement | null>(null);
   const searchSectionRef = useRef<HTMLElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const topPaginationRef = useRef<HTMLDivElement | null>(null);
   const bottomPaginationRef = useRef<HTMLDivElement | null>(null);
   const searchSummaryId = useId();
@@ -170,6 +171,8 @@ export function HomeScreen() {
       setSearchTerm("");
       setCurrentPage(1);
     });
+
+    searchInputRef.current?.focus();
   }
 
   function handleSelectKeyword(keyword: string, shouldScroll = false) {
@@ -365,6 +368,7 @@ export function HomeScreen() {
                   <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ocean" />
                     <input
+                      ref={searchInputRef}
                       type="search"
                       aria-describedby={searchSummaryId}
                       value={searchInputValue}
