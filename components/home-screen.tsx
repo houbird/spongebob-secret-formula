@@ -17,6 +17,7 @@ import {
 import { fetchQuotes, type Quote } from "@/lib/quotes";
 import { DEFAULT_IGNORE_DICT, EnhancedSegmenter } from "@/lib/segmenter";
 import { Pagination } from "./pagination";
+import { TagButton } from "./tag-button";
 
 type LoadState = "loading" | "ready" | "error";
 const RESULTS_PER_PAGE = 12;
@@ -306,43 +307,43 @@ export function HomeScreen() {
                       ))}
                     </blockquote>
                   </div>
-
-                  {/* Meta Chips */}
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <MetaChip
-                      label="維基集數"
-                      value={selectedQuote.wikipediaEpisode}
-                      onClick={() => handleSelectKeyword(selectedQuote.wikipediaEpisode, true)}
-                    />
-                    <MetaChip
-                      label="ESFIO 代號"
-                      value={selectedQuote.esfio}
-                      onClick={() => handleSelectKeyword(selectedQuote.esfio, true)}
-                    />
-                    <MetaChip
-                      label="上傳日期"
-                      value={selectedQuote.date}
-                      onClick={() => handleSelectKeyword(selectedQuote.date, true)}
-                    />
-                  </div>
-
-                  {/* Quick Search Segmented Word Buttons */}
-                  {segmentedWords.length > 0 && (
-                    <div className="space-y-2 pb-2">
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {segmentedWords.map((word, index) => (
-                          <button
-                            key={`${selectedQuote.id}-${word}-${index}`}
-                            type="button"
-                            onClick={() => handleSelectKeyword(word, true)}
-                            className="cursor-pointer inline-flex items-center rounded-xl bg-white hover:bg-ocean hover:text-white border border-border px-3.5 py-1.5 text-xs font-bold text-ocean transition shadow-xs hover:border-ocean active:scale-95"
-                          >
-                            #{word}
-                          </button>
-                        ))}
-                      </div>
+                  
+                  <div>
+                    {/* Meta Chips */}
+                    <div className="flex flex-wrap gap-2 pt-2 text-xs">
+                      {/* <MetaChip
+                        label="維基集數"
+                        value={selectedQuote.wikipediaEpisode}
+                        onClick={() => handleSelectKeyword(selectedQuote.wikipediaEpisode, true)}
+                      /> */}
+                      <MetaChip
+                        label="ESFIO 代號"
+                        value={selectedQuote.esfio}
+                        onClick={() => handleSelectKeyword(selectedQuote.esfio, true)}
+                      />
+                      <MetaChip
+                        label="上傳日期"
+                        value={selectedQuote.date}
+                        onClick={() => handleSelectKeyword(selectedQuote.date, true)}
+                      />
                     </div>
-                  )}
+
+                    {/* Quick Search Segmented Word Buttons */}
+                    {segmentedWords.length > 0 && (
+                      <div className="space-y-2 pb-2 text-xs">
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {segmentedWords.map((word, index) => (
+                            <TagButton
+                              key={`${selectedQuote.id}-${word}-${index}`}
+                              onClick={() => handleSelectKeyword(word, true)}
+                            >
+                              #{word}
+                            </TagButton>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="pt-2">
                     <a
@@ -448,14 +449,12 @@ export function HomeScreen() {
                     熱門推薦：
                   </span>
                   {RECOMMENDED_KEYWORDS.map((kw) => (
-                    <button
+                    <TagButton
                       key={kw}
-                      type="button"
                       onClick={() => handleSelectKeyword(kw)}
-                      className="cursor-pointer inline-flex items-center rounded-full bg-white hover:bg-ocean hover:text-white border border-border px-3 py-1.5 font-semibold text-ink-soft transition shadow-sm active:scale-95"
                     >
                       #{kw}
-                    </button>
+                    </TagButton>
                   ))}
                 </div>
 
@@ -555,11 +554,11 @@ export function HomeScreen() {
                           </div>
 
                           {/* Bottom info overlay */}
-                          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 to-transparent px-4 py-3 text-white">
+                          {/* <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 to-transparent px-4 py-3 text-white">
                             <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90 truncate">
                               {quote.wikipediaEpisode}
                             </p>
-                          </div>
+                          </div> */}
                         </div>
 
                         {/* Card Meta Content */}
@@ -706,25 +705,17 @@ function MetaChip({
 }) {
   if (onClick) {
     return (
-      <button
-        type="button"
-        onClick={onClick}
-        className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-border bg-white/90 hover:bg-ocean hover:text-white hover:border-ocean px-3 py-1.5 text-xs shadow-sm transition active:scale-95 group text-left"
-      >
-        <span className="font-bold text-foreground group-hover:text-white transition-colors">
-          {label}
-        </span>
-        <span className="text-ink-soft group-hover:text-white/90 transition-colors">
-          {value}
-        </span>
-      </button>
+      <TagButton onClick={onClick}>
+        <span>{label}：</span>
+        <span>{value}</span>
+      </TagButton>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/90 px-3 py-1.5 text-xs shadow-sm">
-      <span className="font-bold text-foreground">{label}</span>
-      <span className="text-ink-soft">{value}</span>
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-semibold text-ink-soft shadow-sm">
+      <span>{label}：</span>
+      <span>{value}</span>
     </span>
   );
 }
