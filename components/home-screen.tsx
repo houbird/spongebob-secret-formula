@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { startTransition, useDeferredValue, useEffect, useId, useRef, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Dices,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { fetchQuotes, type Quote } from "@/lib/quotes";
+import { DEFAULT_IGNORE_DICT, EnhancedSegmenter } from "@/lib/segmenter";
 import { Pagination } from "./pagination";
 
 type LoadState = "loading" | "ready" | "error";
@@ -73,6 +74,17 @@ export function HomeScreen() {
   const topPaginationRef = useRef<HTMLDivElement | null>(null);
   const bottomPaginationRef = useRef<HTMLDivElement | null>(null);
   const searchSummaryId = useId();
+
+  const segmenter = useMemo(() => new EnhancedSegmenter(DEFAULT_IGNORE_DICT), []);
+
+  const segmentedWords = useMemo(() => {
+    if (!selectedQuote?.quote) return [];
+    const rawTokens = segmenter.segment(selectedQuote.quote);
+    const validTokens = rawTokens.filter((token) =>
+      /[a-zA-Z0-9\u4e00-\u9fa5]/.test(token.trim()),
+    );
+    return Array.from(new Set(validTokens));
+  }, [selectedQuote, segmenter]);
 
   const deferredSearchTerm = useDeferredValue(searchTerm);
   const normalizedQuery = deferredSearchTerm.trim().toLowerCase();
@@ -313,6 +325,24 @@ export function HomeScreen() {
                       onClick={() => handleSelectKeyword(selectedQuote.date, true)}
                     />
                   </div>
+
+                  {/* Quick Search Segmented Word Buttons */}
+                  {segmentedWords.length > 0 && (
+                    <div className="space-y-2 pb-2">
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {segmentedWords.map((word, index) => (
+                          <button
+                            key={`${selectedQuote.id}-${word}-${index}`}
+                            type="button"
+                            onClick={() => handleSelectKeyword(word, true)}
+                            className="cursor-pointer inline-flex items-center rounded-xl bg-white hover:bg-ocean hover:text-white border border-border px-3.5 py-1.5 text-xs font-bold text-ocean transition shadow-xs hover:border-ocean active:scale-95"
+                          >
+                            #{word}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="pt-2">
                     <a
